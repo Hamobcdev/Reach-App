@@ -1,0 +1,30 @@
+{
+  "name": "algorand",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-balance": "node scripts/checkBalance.js",
+    "compile": "npx tealscript ../contracts/CrisisManagement.algo.ts",
+    "deploy": "npx tsx deploy.ts",
+    "deploy-algorand": "npx tsx deploy.ts",
+    "clean-algorand": "node scripts/clean-legacy.js",
+    "monitor-events": "node scripts/monitorPriceFeed.js",
+    "dev": "echo \"No dev server for Algorand module\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@algorandfoundation/tealscript": "^0.106.3",
+    "algosdk": "^2.11.0",
+    "dotenv": "^16.6.1",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "~5.6.2"
+  }
+}

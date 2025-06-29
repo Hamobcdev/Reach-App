@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "description": "Mock CCIP configuration for Algorand integration",
+  "supportedChains": [
+    {
+      "name": "ethereum",
+      "chainId": 1,
+      "rpcUrl": "https://eth-mainnet.g.alchemy.com/v2/your-api-key",
+      "ccipRouter": "0x1234567890abcdef1234567890abcdef12345678"
+    },
+    {
+      "name": "polygon",
+      "chainId": 137,
+      "rpcUrl": "https://polygon-mainnet.g.alchemy.com/v2/your-api-key",
+      "ccipRouter": "0xabcdef1234567890abcdef1234567890abcdef12"
+    },
+    {
+      "name": "avalanche",
+      "chainId": 43114,
+      "rpcUrl": "https://api.avax.network/ext/bc/C/rpc",
+      "ccipRouter": "0x7890abcdef1234567890abcdef1234567890abcd"
+    }
+  ],
+  "algorandConfig": {
+    "appId": "VITE_ALGORAND_APP_ID from .env",
+    "appAddress": "VITE_ALGORAND_APP_ADDRESS from .env",
+    "network": "testnet",
+    "supportedMethods": [
+      {
+        "name": "fiat_deposit",
+        "description": "Process fiat deposits from EVM chains",
+        "parameters": ["userAddress", "amount", "reference"]
+      },
+      {
+        "name": "update_system_settings",
+        "description": "Update system settings from EVM chains",
+        "parameters": ["settingKey", "settingValue", "reason"]
+      }
+    ]
+  },
+  "mockMessages": [
+    {
+      "id": "msg_001",
+      "sourceChain": "ethereum",
+      "sourceAddress": "0x1234567890abcdef1234567890abcdef12345678",
+      "destinationChain": "algorand",
+      "payload": {
+        "type": "fiat_deposit",
+        "userAddress": "ALGORAND_ADDRESS from .env",
+        "amount": 100000000,
+        "reference": "stripe_pi_12345",
+        "timestamp": 1687654321000
+      }
+    },
+    {
+      "id": "msg_002",
+      "sourceChain": "polygon",
+      "sourceAddress": "0xabcdef1234567890abcdef1234567890abcdef12",
+      "destinationChain": "algorand",
+      "payload": {
+        "type": "system_update",
+        "settingKey": "emergency_threshold",
+        "settingValue": 5000000,
+        "reason": "Adjusted for market conditions",
+        "timestamp": 1687654321000
+      }
+    }
+  ],
+  "pollingInterval": 60000,
+  "retryAttempts": 3,
+  "retryDelay": 5000
+}

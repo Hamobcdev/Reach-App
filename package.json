@@ -1,0 +1,51 @@
+{
+  "name": "unbanked-pay-card",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "create-test-users": "node scripts/create-test-users.js",
+    "deploy-algorand": "cd algorand && npx tsx deploy.ts",
+    "server:dev": "cd server && npm run dev",
+    "clean-algorand": "node algorand/scripts/clean-legacy.js",
+    "compile": "cd algorand && npx tealscript ../contracts/CrisisManagement.algo.ts"
+  },
+  "dependencies": {
+    "@algorandfoundation/algokit-utils": "^5.0.1",
+    "@algorandfoundation/tealscript": "^0.106.3",
+    "@radix-ui/react-tabs": "^1.1.12",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.1",
+    "@supabase/supabase-js": "^2.39.0",
+    "algosdk": "2.7.0",
+    "axios": "^1.10.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "lucide-react": "^0.263.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.11.0",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10"
+  }
+}

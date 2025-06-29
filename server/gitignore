@@ -1,0 +1,23 @@
+# Ignore node modules
+node_modules/
+
+# Ignore environment variables
+.env
+.env.local
+
+# Ignore logs
+logs/
+*.log
+npm-debug.log*
+
+# Ignore test coverage reports
+coverage/
+
+# Ignore temp files
+*.tmp
+*.swp
+
+# Ignore compiled files
+dist/
+build/
+

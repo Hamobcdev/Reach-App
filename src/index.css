@@ -1,0 +1,29 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  z-index: 100; /* Ensure header is above other elements */
+  position: relative; /* Ensure z-index applies */
+}
+
+nav a {
+  pointer-events: auto !important; /* Ensure links are clickable */
+  cursor: pointer; /* Visual feedback */
+}
+
+/* Fallback if Tailwind not configured */
+.no-tailwind .header {
+  z-index: 100;
+}
+
+.no-tailwind nav a {
+  pointer-events: auto;
+  cursor: pointer;
+}

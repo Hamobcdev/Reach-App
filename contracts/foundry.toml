@@ -1,0 +1,22 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.19"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+
+# Polygon Amoy Testnet Configuration
+[rpc_endpoints]
+polygon_amoy = "https://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+polygon_mainnet = "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+
+[etherscan]
+polygon_amoy = { key = "${POLYGONSCAN_API_KEY}", url = "https://api-amoy.polygonscan.com/api" }
+
+# Testing configuration
+[profile.test]
+verbosity = 2
+gas_limit = 9223372036854775807
+gas_price = 20000000000
