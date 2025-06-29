@@ -35,3 +35,4 @@ stripe_*.tar.gz
 .env
 .venv/
 __pycache__/
+.env.backup
