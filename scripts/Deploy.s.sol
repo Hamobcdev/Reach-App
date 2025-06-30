@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "forge-std/Script.sol";
-import "../src/UnbankedPayCard.sol";
+import "contracts/lib/forge-std/src/Script.sol";
+import "contracts/src/UnbankedPayCard.sol";
 
 contract DeployUnbankedPayCard is Script {
     function run() external {

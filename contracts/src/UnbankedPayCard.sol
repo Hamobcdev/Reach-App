@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
+// aderyn-ignore-next-line(unspecific-solidity-pragma)
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -21,7 +22,7 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
         uint256 lastResetMonth;
         bool isActive;
         uint8 kycTier; // 1, 2, or 3
-        string region; // africa, asia, global
+        string region; // africa, asia, oceania, pacific, global
         uint256 createdAt;
     }
     
@@ -29,6 +30,7 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
     mapping(address => uint256[]) public userCards;
     mapping(string => bool) public supportedCurrencies;
     mapping(address => bool) public authorizedMerchants;
+    mapping(string => bool) public supportedRegions;
     
     event CardCreated(uint256 indexed cardId, address indexed owner, string currency, string region);
     event CardFunded(uint256 indexed cardId, uint256 amount, string currency);
@@ -37,17 +39,30 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
     event CardDeactivated(uint256 indexed cardId);
     event MerchantAuthorized(address indexed merchant);
     event CurrencyAdded(string currency);
+    event RegionAdded(string region);
+    event CardWithdrawn(uint256 indexed cardId, uint256 amount, address indexed to);
     
     constructor() ERC721("UnbankedPayCard", "UPC") {
-        // Initialize supported currencies
+        // Initialize supported currencies including Pacific region
         supportedCurrencies["USD"] = true;
         supportedCurrencies["EUR"] = true;
-        supportedCurrencies["NGN"] = true;
-        supportedCurrencies["KES"] = true;
-        supportedCurrencies["PHP"] = true;
-        supportedCurrencies["INR"] = true;
-        supportedCurrencies["ZAR"] = true;
-        supportedCurrencies["GHS"] = true;
+        supportedCurrencies["NGN"] = true; // Nigerian Naira
+        supportedCurrencies["KES"] = true; // Kenyan Shilling
+        supportedCurrencies["PHP"] = true; // Philippine Peso
+        supportedCurrencies["INR"] = true; // Indian Rupee
+        supportedCurrencies["ZAR"] = true; // South African Rand
+        supportedCurrencies["GHS"] = true; // Ghanaian Cedi
+        supportedCurrencies["NZD"] = true; // New Zealand Dollar
+        supportedCurrencies["AUD"] = true; // Australian Dollar
+        supportedCurrencies["TOP"] = true; // Tongan Pa'anga
+        supportedCurrencies["FJD"] = true; // Fijian Dollar
+
+        // Initialize supported regions
+        supportedRegions["africa"] = true;
+        supportedRegions["asia"] = true;
+        supportedRegions["oceania"] = true; // Pacific region
+        supportedRegions["pacific"] = true; // Alternative pacific identifier
+        supportedRegions["global"] = true;
         
         _cardIdCounter = 0;
     }
@@ -73,6 +88,7 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
         uint8 kycTier
     ) external returns (uint256) {
         require(supportedCurrencies[currency], "Currency not supported");
+        require(supportedRegions[region], "Region not supported");
         require(kycTier >= 1 && kycTier <= 3, "Invalid KYC tier");
         
         _cardIdCounter++;
@@ -144,19 +160,7 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
         
         emit CardUsed(cardId, amount, merchant);
     }
-    
-    function withdrawFromCard(uint256 cardId, uint256 amount) external nonReentrant cardExists(cardId) onlyCardOwner(cardId) {
-        require(amount > 0, "Amount must be greater than 0");
         
-        VirtualCard storage card = virtualCards[cardId];
-        require(card.balance >= amount, "Insufficient balance");
-        
-        card.balance -= amount;
-        
-        (bool success, ) = payable(msg.sender).call{value: amount}("");
-        require(success, "Withdrawal failed");
-    }
-    
     function _resetLimitsIfNeeded(uint256 cardId) internal {
         VirtualCard storage card = virtualCards[cardId];
         uint256 currentDay = block.timestamp / 1 days;
@@ -200,10 +204,63 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
         monthlyRemaining = card.monthlyLimit > monthlySpent ? card.monthlyLimit - monthlySpent : 0;
     }
     
+    function getCardsByRegion(string memory region) external view returns (uint256[] memory) {
+        require(supportedRegions[region], "Region not supported");
+        
+        uint256 count = 0;
+        // Count cards in the region first
+        for (uint256 i = 1; i <= _cardIdCounter; i++) {
+            if (keccak256(bytes(virtualCards[i].region)) == keccak256(bytes(region))) {
+                count++;
+            }
+        }
+        
+        // Create array and populate
+        uint256[] memory regionCards = new uint256[](count);
+        uint256 index = 0;
+        for (uint256 i = 1; i <= _cardIdCounter; i++) {
+            if (keccak256(bytes(virtualCards[i].region)) == keccak256(bytes(region))) {
+                regionCards[index] = i;
+                index++;
+            }
+        }
+        
+        return regionCards;
+    }
+    
+    function getCardsByCurrency(string memory currency) external view returns (uint256[] memory) {
+        require(supportedCurrencies[currency], "Currency not supported");
+        
+        uint256 count = 0;
+        // Count cards with the currency first
+        for (uint256 i = 1; i <= _cardIdCounter; i++) {
+            if (keccak256(bytes(virtualCards[i].currency)) == keccak256(bytes(currency))) {
+                count++;
+            }
+        }
+        
+        // Create array and populate
+        uint256[] memory currencyCards = new uint256[](count);
+        uint256 index = 0;
+        for (uint256 i = 1; i <= _cardIdCounter; i++) {
+            if (keccak256(bytes(virtualCards[i].currency)) == keccak256(bytes(currency))) {
+                currencyCards[index] = i;
+                index++;
+            }
+        }
+        
+        return currencyCards;
+    }
+    
     // Admin functions
     function addSupportedCurrency(string memory currency) external onlyOwner {
         supportedCurrencies[currency] = true;
         emit CurrencyAdded(currency);
+    }
+    
+    function addSupportedRegion(string memory region) external onlyOwner {
+        supportedRegions[region] = true;
+        emit RegionAdded(region);
     }
     
     function authorizeMerchant(address merchant) external onlyOwner {
@@ -233,6 +290,41 @@ contract UnbankedPayCard is ERC721, Ownable, ReentrancyGuard {
     
     function getTotalCards() external view returns (uint256) {
         return _cardIdCounter;
+    }
+    
+    function getSupportedCurrencies() external pure returns (string[] memory) {
+        string[] memory currencies = new string[](12);
+        currencies[0] = "USD";
+        currencies[1] = "EUR";
+        currencies[2] = "NGN";
+        currencies[3] = "KES";
+        currencies[4] = "PHP";
+        currencies[5] = "INR";
+        currencies[6] = "ZAR";
+        currencies[7] = "GHS";
+        currencies[8] = "NZD";
+        currencies[9] = "AUD";
+        currencies[10] = "TOP";
+        currencies[11] = "FJD";
+        return currencies;
+    }
+    
+    function getSupportedRegions() external pure returns (string[] memory) {
+        string[] memory regions = new string[](5);
+        regions[0] = "africa";
+        regions[1] = "asia";
+        regions[2] = "oceania";
+        regions[3] = "pacific";
+        regions[4] = "global";
+        return regions;
+    }
+    
+    function isCurrencySupported(string memory currency) external view returns (bool) {
+        return supportedCurrencies[currency];
+    }
+    
+    function isRegionSupported(string memory region) external view returns (bool) {
+        return supportedRegions[region];
     }
     
     // Override required by Solidity
