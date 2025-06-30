@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Left */}
         <div>
-          <h3 className="text-xl font-semibold mb-3">Samoa Virtual Bankcard</h3>
+          <h3 className="text-xl font-semibold mb-3">Reach Virtual Bankcard</h3>
           <p className="text-sm text-gray-400">
             Secure virtual cards for everyone — no bank account needed.
           </p>

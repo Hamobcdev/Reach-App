@@ -225,7 +225,7 @@ const Header = () => {
     <header className="bg-white shadow-md py-4 px-6 fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold text-blue-700 hover:text-blue-800 transition-colors">
-          VirtualCard Samoa
+          Reach your Card
         </Link>
         
         {/* Desktop Navigation */}

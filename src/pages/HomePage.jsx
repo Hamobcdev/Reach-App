@@ -50,7 +50,7 @@ const translations = {
       },
     },
     benefits: {
-      title: "Why Choose Samoa Virtual Bankcard?",
+      title: "Why Choose Reach Virtual Bankcard?",
       items: [
         {
           title: "No Bank Account Required",
@@ -78,7 +78,7 @@ const translations = {
         {
           name: "Tuala S.",
           location: "Apia, Samoa",
-          text: "Finally I can shop online without needing a traditional bank account! This service changed everything for my family.",
+          text: "Finally I reach shops online without needing a traditional bank account! This service changed everything for my family.",
           rating: 5,
         },
         {

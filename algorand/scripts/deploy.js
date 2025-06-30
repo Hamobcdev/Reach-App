@@ -8,7 +8,7 @@ import { execSync } from 'child_process';
 // Setup path to root .env file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootPath = path.resolve(__dirname, '../');
+const rootPath = path.resolve(__dirname, '../..');
 const envPath = path.resolve(rootPath, '.env');
 
 // Load environment variables from .env file
@@ -38,13 +38,13 @@ async function compileTEALScript() {
     console.log('\n📝 Compiling TEALScript to TEAL...');
     
     // Check if the contract file exists
-    const contractPath = path.join(__dirname, '..', 'algorand', 'contracts', 'CrisisManagement.algo.ts');
+    const contractPath = path.join(__dirname, '..', 'contracts', 'CrisisManagement.algo.ts');
     if (!fs.existsSync(contractPath)) {
       console.error(`Error: Contract file not found at ${contractPath}`);
       process.exit(1);
     }
     
-    // Use npx to run the compilation script with the correct flag format
+    // Use npx to run the compilation script
     try {
       console.log('Compiling TEALScript contract...');
       execSync(`npx tealscript ${contractPath}`, { stdio: 'inherit' });
@@ -52,8 +52,8 @@ async function compileTEALScript() {
       console.log('✅ TEALScript compilation successful!');
       
       // Check if the output files exist
-      const approvalPath = path.join(__dirname, 'contracts', 'approval.teal');
-      const clearPath = path.join(__dirname, 'contracts', 'clear.teal');
+      const approvalPath = path.join(__dirname, '..', 'contracts', 'approval.teal');
+      const clearPath = path.join(__dirname, '..', 'contracts', 'clear.teal');
       
       if (!fs.existsSync(approvalPath) || !fs.existsSync(clearPath)) {
         console.error('Error: Compiled TEAL files not found');
@@ -67,10 +67,10 @@ async function compileTEALScript() {
     } catch (error) {
       console.error('Error during compilation:', error);
       
-      // Fallback: Check if we already have TEAL files
+      // Fallback: Check for existing TEAL files
       console.log('Checking for existing TEAL files...');
-      const approvalPath = path.join(__dirname, 'contracts', 'approval.teal');
-      const clearPath = path.join(__dirname, 'contracts', 'clear.teal');
+      const approvalPath = path.join(__dirname, '..', 'contracts', 'approval.teal');
+      const clearPath = path.join(__dirname, '..', 'contracts', 'clear.teal');
       
       if (fs.existsSync(approvalPath) && fs.existsSync(clearPath)) {
         console.log('✅ Found existing TEAL files, using those instead');

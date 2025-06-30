@@ -18,7 +18,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@algorandfoundation/tealscript": "^0.106.3",
+    "@algorandfoundation/tealscript": "^0.106.2",
     "algosdk": "^2.11.0",
     "dotenv": "^16.6.1",
     "ts-node": "^10.9.2"
